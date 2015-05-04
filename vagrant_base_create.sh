@@ -64,10 +64,10 @@ echo "vagrant ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 # Remove udev persistent net rules file
 rm -f /etc/udev/rules.d/70-persistent-net.rules
 
-echo "Finished. Please edit /etc/sysconfig/network-scripts/ifcfg-eth0 to reflect the following: \n
-DEVICE=eth0 \n
-TYPE=Ethernet \n
-ONBOOT=yes \n
-NM_CONTROLLED=no \n
-BOOTPROTO=dhcp \n
+echo "Finished. Please edit /etc/sysconfig/network-scripts/ifcfg-eth0 to reflect the following:
+DEVICE=eth0
+TYPE=Ethernet
+ONBOOT=yes
+NM_CONTROLLED=no
+BOOTPROTO=dhcp
 And run the shrink_box script"

@@ -1,13 +1,17 @@
 #! /bin/bash
 
-# Bring up eth0
-ifup eth0
-
 # Install packages
-yum install -y openssh-clients man git vim wget curl ntp postfix
+yum install -y openssh-clients man vim wget curl ntp postfix
+
+# Install Epel and IUS repos for newer php versions
+wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+rpm -Uvh epel-release-6*.rpm
+
+wget http://dl.iuscommunity.org/pub/ius/stable/CentOS/6/x86_64/ius-release-1.0-13.ius.centos6.noarch.rpm
+rpm -Uvh ius-release*.rpm
 
 # Install server stack
-yum install -y httpd php php-mysql php-imap php-pdo php-cli php-fpm php-gd php-intl php-xml php-proxess php-xmlrpc php-zts php-devel mysql-server 
+yum install -y httpd php55u php55u-mysql php55u-imap php55u-pdo php55u-cli php55u-fpm php55u-gd php55u-intl php55u-xml php55u-proxess php55u-xmlrpc php55u-zts php55u-devel mysql-server
 
 # Restart Apache and Mysql
 service httpd restart
@@ -48,6 +52,7 @@ sed -i -e 's/^SELINUX=.*/SELINUX=permissive/' /etc/selinux/config
 
 # Add vagrant user
 useradd vagrant
+echo "vagrant" | passwd vagrant --stdin
 
 # Create Vagrant users .ssh directory, add insecure keyset, and set proper permissions
 mkdir -m 0700 -p /home/vagrant/.ssh
@@ -64,10 +69,7 @@ echo "vagrant ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 # Remove udev persistent net rules file
 rm -f /etc/udev/rules.d/70-persistent-net.rules
 
-echo "Finished. Please edit /etc/sysconfig/network-scripts/ifcfg-eth0 to reflect the following:
-DEVICE=eth0
-TYPE=Ethernet
-ONBOOT=yes
-NM_CONTROLLED=no
-BOOTPROTO=dhcp
-And run the shrink_box script"
+# Set eth0 device to start on boot
+sed 's/ONBOOT=no/ONBOOT=yes' /etc/sysconfig/network-scripts/ifcfg-eth0
+
+echo "Finished."
